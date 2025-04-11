@@ -1,53 +1,33 @@
-const video = document.getElementById('video');
-const playPauseButton = document.getElementById('play-pause');
-const rewindButton = document.getElementById('rewind');
-const fastForwardButton = document.getElementById('fast-forward');
-const volumeInput = document.getElementById('volume');
-const playbackSpeedInput = document.getElementById('playback-speed');
-const progress = document.querySelector('.progress');
-const progressFilled = document.querySelector('.progress__filled');
+document.addEventListener("DOMContentLoaded", () => {
+  const video = document.querySelector(".player__video");
+  const playButton = document.querySelector(".toggle");
+  const rewindButton = document.querySelector(".rewind");
+  const progress = document.querySelector(".progress");
 
-// Play/Pause functionality
-playPauseButton.addEventListener('click', () => {
+  function togglePlay() {
     if (video.paused) {
-        video.play();
-        playPauseButton.textContent = '❚ ❚'; // Change to pause symbol
+      video.play();
+      playButton.textContent = "❚ ❚";
     } else {
-        video.pause();
-        playPauseButton.textContent = '►'; // Change to play symbol
+      video.pause();
+      playButton.textContent = "►";
     }
-});
+  }
 
-// Rewind 10 seconds
-rewindButton.addEventListener('click', () => {
+  function updateProgress() {
+    progress.value = (video.currentTime / video.duration) * 100;
+  }
+
+  function setProgress() {
+    video.currentTime = (progress.value / 100) * video.duration;
+  }
+
+  function rewindVideo() {
     video.currentTime -= 10;
-});
+  }
 
-// Fast forward 25 seconds
-fastForwardButton.addEventListener('click', () => {
-    video.currentTime += 25;
-});
-
-// Volume control
-volumeInput.addEventListener('input', (e) => {
-    video.volume = e.target.value;
-});
-
-// Playback speed control
-playbackSpeedInput.addEventListener('input', (e) => {
-    video.playbackRate = e.target.value;
-});
-
-// Update progress bar as video plays
-video.addEventListener('timeupdate', () => {
-    const percent = (video.currentTime / video.duration) * 100;
-    progressFilled.style.width = `${percent}%`;
-});
-
-// Click on progress bar to seek
-progress.addEventListener('click', (e) => {
-    const rect = progress.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const percent = clickX / progress.offsetWidth;
-    video.currentTime = percent * video.duration;
+  playButton.addEventListener("click", togglePlay);
+  rewindButton.addEventListener("click", rewindVideo);
+  video.addEventListener("timeupdate", updateProgress);
+  progress.addEventListener("input", setProgress);
 });
